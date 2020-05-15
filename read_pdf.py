@@ -4,35 +4,43 @@ from pdfminer.pdfpage import PDFPage
 from pdfminer.converter import XMLConverter, HTMLConverter, TextConverter
 from pdfminer.layout import LAParams
 import io
-import PyPDF2
+import glob
+from datetime import datetime
 
-data = 'C:\\repositorio\\teste_pdf\\fatura_71685305_detalhada.pdf_1.pdf'
+ini = datetime.now()
 
-fp = open(data, 'rb')
-rsrcmgr = PDFResourceManager()
-retstr = io.StringIO()
-codec = 'utf-8'
-laparams = LAParams()
-device = TextConverter(rsrcmgr, retstr, codec=codec, laparams=laparams)
-interpreter = PDFPageInterpreter(rsrcmgr, device)
+pathfile = "C:\\repositorio\\teste_pdf\\pdf_split\\*.pdf"
 
-listpage = []
-list_not_page = []
-increment = 0
+def recoverfiles(pathfile):
+    list_file = []
+    for f in glob.glob(pathfile):
+        list_file.append(f)
+    return list_file
 
-pages = PDFPage.get_pages(fp)
+def read_pdf(list_file):
+    list_due_date = []
+    for f in list_file:
+        fp = open(f, 'rb')
+        rsrcmgr = PDFResourceManager()
+        retstr = io.StringIO()
+        codec = 'utf-8'
+        laparams = LAParams()
+        device = TextConverter(rsrcmgr, retstr, codec=codec, laparams=laparams)
+        interpreter = PDFPageInterpreter(rsrcmgr, device)
+        pages = PDFPage.get_pages(fp)
+        for page in pages:
+            interpreter.process_page(page)
+            data =  retstr.getvalue()
+            if 'VENCIMENTO' in data or 'Fatura de Pagamento' in data or 'NOTA FISCAL DE SERVIÇOS' in data:
+                list_due_date.append(f)
 
-for page in pages:
-    interpreter.process_page(page)
-    data =  retstr.getvalue()
-    increment += 1
-    if 'NOME DO CLIENTE' in data:
-        arquivo = f'dados{increment}.txt'
-        # w = open(arquivo, 'w')
-        print(f'page: {increment}\n {data}')
-        listpage.append(increment)
-        # w.write(data + '\n')
-        # print(listpage)
-    else:
-        list_not_page.append(increment)
-        print(list_not_page)
+    return list_due_date
+
+
+list_file = recoverfiles(pathfile)
+list_file = sorted(list_file, key=len)
+list_due_date = read_pdf(list_file)
+
+print(list_due_date)
+fim = datetime.now()
+print(fim - ini)
