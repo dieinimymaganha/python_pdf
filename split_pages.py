@@ -1,18 +1,19 @@
 import PyPDF2
 
-import time
+from datetime import datetime
 
-inicio = time.time()
+ini = datetime.now()
 
-
-with open('fatura_71685305_detalhada.pdf', 'rb') as pdf_file:
+path_split = "C:\\repositorio\\teste_pdf\\pdf_split\\"
+with open('C:\\repositorio\\teste_pdf\\fatura_71722865_detalhada.pdf', 'rb') as pdf_file:
     pdf_reader = PyPDF2.PdfFileReader(pdf_file)
     for i in range(pdf_reader.numPages):
         pdf_writer = PyPDF2.PdfFileWriter()
         pdf_writer.addPage(pdf_reader.getPage(i))
-        output_file_name = f'fatura_71685305_detalhada.pdf_{i}.pdf'
-        with open(output_file_name, 'wb') as output_file:
+        output_file_name = f'fatura_71722865_detalhada_{i}.pdf'
+        path_final = path_split + output_file_name
+        with open(path_final, 'wb') as output_file:
             pdf_writer.write(output_file)
 
-fim = time.time()
-print(fim - inicio)
+fim = datetime.now()
+print(fim - ini)
