@@ -7,7 +7,7 @@ import io
 import glob
 from datetime import datetime
 
-fp = open("C:\\repositorio\\teste_pdf\\pdf_split\\fatura_71722865_detalhada_346.pdf", 'rb')
+fp = open("C:\\repositorio\\teste_pdf\\pdf_split\\TIMGSM_0140075579_042020_4224165751_Corp_CD100.pdf", 'rb')
 rsrcmgr = PDFResourceManager()
 retstr = io.StringIO()
 codec = 'utf-8'
